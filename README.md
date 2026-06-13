@@ -75,6 +75,19 @@ npm run build    # Type-check + bundle to dist/ (es + iife) + .d.ts
 The demo `index.html` mounts three instances with different difficulties,
 storage keys, and a custom theme for manual testing.
 
+## GitHub Pages demo
+
+The demo is served as a prebuilt static site from `docs/`:
+
+```bash
+npm run build:pages   # bundles index.html into docs/ (base './', + .nojekyll)
+```
+
+Commit `docs/` and, in **Settings → Pages → Build and deployment**, choose
+**Source: Deploy from a branch**, branch **main**, folder **/docs**. The site
+then lives at `https://<user>.github.io/<repo>/`. Rebuild and commit `docs/`
+whenever the demo changes.
+
 ## Project structure
 
 ```
