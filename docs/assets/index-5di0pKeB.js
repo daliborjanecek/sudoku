@@ -14,12 +14,13 @@ var M=Object.defineProperty;var I=(r,i,e)=>i in r?M(r,i,{enumerable:!0,configura
   --_bg: var(--sudoku-bg, #ffffff);
   --_grid-line: var(--sudoku-grid-line, #cbd5e1);
   --_block-line: var(--sudoku-grid-block-line, #1e293b);
-  --_given: var(--sudoku-given-color, #0f172a);
+  --_given: var(--sudoku-given-color, #1c1e1f);
   --_cell-bg: var(--sudoku-cell-bg, #ffffff);
+  --_hover-bg: var(--sudoku-hover-bg, #eef9ff);
   --_selected-bg: var(--sudoku-selected-bg, #d9ebf8);
   --_conflict-bg: var(--sudoku-conflict-bg, #fbe4d9);
   --_btn-bg: var(--sudoku-btn-bg, #f1f5f9);
-  --_btn-text: var(--sudoku-btn-text, #0f172a);
+  --_btn-text: var(--sudoku-btn-text, #1c1e1f);
 
   container-type: inline-size;
   display: block;
@@ -134,8 +135,8 @@ button:focus-visible {
 }
 .cell.last-row { border-bottom: none; }
 
-.cell.selectable:hover {
-  background: var(--_selected-bg);
+.cell.selectable:not(.selected):hover {
+  background: var(--_hover-bg);
 }
 .cell.selected {
   background: var(--_selected-bg);
