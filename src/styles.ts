@@ -14,6 +14,7 @@ export const styles = `
   --_font: var(--sudoku-font, "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif);
 
   --_bg: var(--sudoku-bg, #ffffff);
+  --_overlay-bg: var(--sudoku-overlay-bg, #ffffff);
   --_grid-line: var(--sudoku-grid-line, #cbd5e1);
   --_block-line: var(--sudoku-grid-block-line, #1e293b);
   --_given: var(--sudoku-given-color, #1c1e1f);
@@ -52,6 +53,7 @@ export const styles = `
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+  transition: opacity 0.2s ease;
 }
 
 .timer {
@@ -103,6 +105,7 @@ button:focus-visible {
   overflow: hidden;
   user-select: none;
   touch-action: manipulation;
+  transition: opacity 0.2s ease;
 }
 
 .cell {
@@ -161,6 +164,7 @@ button:focus-visible {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 6px;
+  transition: opacity 0.2s ease;
 }
 .keypad button {
   min-height: 44px;
@@ -182,6 +186,16 @@ button:focus-visible {
   }
 }
 
+/* ---------- Completion state ---------- */
+/* The board and controls fade to 45% opacity behind the win overlay,
+   instead of being dimmed by a dark scrim on top of them. */
+.wrap.completed > .topbar,
+.wrap.completed > .grid,
+.wrap.completed > .keypad {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
 /* ---------- Overlay ---------- */
 .overlay {
   position: absolute;
@@ -189,13 +203,12 @@ button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(15, 23, 42, 0.55);
   border-radius: 4px;
   z-index: 10;
   padding: 16px;
 }
 .overlay-card {
-  background: var(--_bg);
+  background: var(--_overlay-bg);
   border-radius: 12px;
   padding: 24px;
   text-align: center;

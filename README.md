@@ -41,31 +41,67 @@ element instance, never in module scope.
 
 ## Theming
 
-Styling is isolated in the shadow DOM. Override these CSS custom properties on
-the element (each has a built-in fallback):
-
-| Property                  | Default                                | Role                                  |
-| ------------------------- | -------------------------------------- | ------------------------------------- |
-| `--sudoku-accent`         | `#006cb9`                              | selection, buttons                    |
-| `--sudoku-user-color`     | `#006cb9`                              | user-entered numbers                  |
-| `--sudoku-conflict-color` | `#cc3c00`                              | conflict highlight                    |
-| `--sudoku-win-color`      | `#af8b08`                              | completion ("Hotovo") overlay         |
-| `--sudoku-font`           | `"Open Sans", system-ui, …`            | font stack                            |
-
-Additional surface colors (`--sudoku-given-color` `#1c1e1f` text,
-`--sudoku-hover-bg` `#eef9ff` cell hover, `--sudoku-bg`, `--sudoku-cell-bg`,
-`--sudoku-btn-bg`, …) are listed in `src/styles.ts`.
+Styling is isolated in the shadow DOM — nothing leaks in or out. The only way
+to restyle the widget is through its public CSS custom properties, set on the
+element itself (each has a built-in fallback, so you only need to override
+what you actually want to change):
 
 ```css
 sudoku-game {
   --sudoku-accent: #7c3aed;
+  --sudoku-user-color: #7c3aed;
 }
 ```
 
-The default font stack prefers **Open Sans** and falls back to the system font
-if it isn't available. The widget itself makes **no external requests**; load
-Open Sans on the host page (the demo does so via Google Fonts) or self-host it
-to guarantee it renders — otherwise the fallback is used.
+Or inline: `<sudoku-game style="--sudoku-accent: #7c3aed">`.
+
+### Colors
+
+| Property                   | Default   | Role                                                                                                    |
+| --------------------------- | --------- | --------------------------------------------------------------------------------------------------------- |
+| `--sudoku-accent`          | `#006cb9` | selection outline, primary buttons                                                                       |
+| `--sudoku-user-color`      | `#006cb9` | numbers typed in by the player                                                                            |
+| `--sudoku-given-color`     | `#1c1e1f` | numbers pre-filled by the puzzle                                                                          |
+| `--sudoku-conflict-color`  | `#cc3c00` | text color of conflicting numbers                                                                         |
+| `--sudoku-win-color`       | `#af8b08` | "Hotovo" heading and time in the win card                                                                 |
+| `--sudoku-bg`              | `#ffffff` | background of the whole widget (topbar, grid frame, keypad area)                                          |
+| `--sudoku-overlay-bg`      | `#ffffff` | background of the win card — independent of `--sudoku-bg`, so it stays solid even if the widget background is transparent |
+| `--sudoku-cell-bg`         | `#ffffff` | default cell background                                                                                   |
+| `--sudoku-hover-bg`        | `#eef9ff` | cell background on hover                                                                                   |
+| `--sudoku-selected-bg`     | `#d9ebf8` | selected cell background                                                                                   |
+| `--sudoku-conflict-bg`     | `#fbe4d9` | background of conflicting cells                                                                            |
+| `--sudoku-grid-line`       | `#cbd5e1` | thin lines between cells                                                                                   |
+| `--sudoku-grid-block-line` | `#1e293b` | thick lines between 3×3 blocks, and the grid's outer border                                                |
+| `--sudoku-btn-bg`          | `#f1f5f9` | Reset / New game / keypad button background                                                                |
+| `--sudoku-btn-text`        | `#1c1e1f` | button text color                                                                                          |
+
+### Font
+
+| Property       | Default                                                                                  | Role       |
+| --------------- | ------------------------------------------------------------------------------------------ | ---------- |
+| `--sudoku-font` | `"Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif` | font stack |
+
+The default stack prefers **Open Sans** and falls back to the system font if
+it isn't available. The widget makes **no external requests**; load Open Sans
+on the host page (the demo does so via Google Fonts) or self-host it to
+guarantee it renders — otherwise the fallback is used.
+
+### Blending into a page
+
+To make the widget's chrome (timer, buttons, keypad) sit on a colored page
+background instead of white, set `--sudoku-bg: transparent`. The grid cells
+stay white (from `--sudoku-cell-bg`, styled independently) and the win card
+stays solid white (from `--sudoku-overlay-bg`), so both remain legible
+regardless of what's behind the widget:
+
+```css
+.article-callout sudoku-game {
+  --sudoku-bg: transparent;
+  --sudoku-btn-bg: #ffffff;
+}
+```
+
+### Layout
 
 The widget adapts to its parent's width using container queries (no viewport
 media queries), and keypad buttons keep a 44×44 px minimum touch target.
@@ -79,8 +115,8 @@ npm test         # Vitest unit tests (generator/solver + component smoke tests)
 npm run build    # Type-check + bundle to dist/ (es + iife) + .d.ts
 ```
 
-The demo `index.html` mounts three instances with different difficulties,
-storage keys, and a custom theme for manual testing.
+`index.html` is a demo page (currently a mock newspaper article) used to try
+the widget in a realistic embed while developing.
 
 ## GitHub Pages demo
 

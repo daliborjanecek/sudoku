@@ -38,6 +38,7 @@ export class SudokuGame extends HTMLElement {
   private timerEl!: HTMLDivElement;
   private actionsEl!: HTMLDivElement;
   private gridEl!: HTMLDivElement;
+  private wrapEl!: HTMLDivElement;
   private overlayEl: HTMLDivElement | null = null;
   private intervalId: number | null = null;
   private sinceSave = 0;
@@ -95,6 +96,7 @@ export class SudokuGame extends HTMLElement {
     wrap.className = 'wrap';
     wrap.tabIndex = 0;
     wrap.addEventListener('keydown', this.onKeyDown);
+    this.wrapEl = wrap;
 
     // top bar
     const topbar = document.createElement('div');
@@ -210,6 +212,7 @@ export class SudokuGame extends HTMLElement {
   }
 
   private renderOverlay(): void {
+    this.wrapEl.classList.toggle('completed', this.completed);
     if (this.completed) {
       this.showCompletionOverlay();
     } else if (this.overlayEl) {
@@ -239,7 +242,7 @@ export class SudokuGame extends HTMLElement {
     actions.appendChild(again);
     card.append(h2, p, actions);
     overlay.appendChild(card);
-    this.root.querySelector('.wrap')?.appendChild(overlay);
+    this.wrapEl.appendChild(overlay);
     this.overlayEl = overlay;
   }
 
@@ -307,7 +310,7 @@ export class SudokuGame extends HTMLElement {
     if (this.completed) return;
     if (this.puzzle[index] !== EMPTY) return; // given cells aren't selectable
     this.selected = index;
-    (this.root.querySelector('.wrap') as HTMLElement | null)?.focus();
+    this.wrapEl.focus();
     this.renderGrid();
   }
 
