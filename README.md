@@ -44,12 +44,13 @@ element instance, never in module scope.
 Styling is isolated in the shadow DOM. Override these CSS custom properties on
 the element (each has a built-in fallback):
 
-| Property                  | Default      |
-| ------------------------- | ------------ |
-| `--sudoku-accent`         | blue         |
-| `--sudoku-user-color`     | blue         |
-| `--sudoku-conflict-color` | red          |
-| `--sudoku-font`           | system stack |
+| Property                  | Default                                | Role                                  |
+| ------------------------- | -------------------------------------- | ------------------------------------- |
+| `--sudoku-accent`         | `#006cb9`                              | selection, buttons                    |
+| `--sudoku-user-color`     | `#006cb9`                              | user-entered numbers                  |
+| `--sudoku-conflict-color` | `#cc3c00`                              | conflict highlight                    |
+| `--sudoku-win-color`      | `#af8b08`                              | completion ("Hotovo") overlay         |
+| `--sudoku-font`           | `"Open Sans", system-ui, …`            | font stack                            |
 
 Additional surface colors (`--sudoku-bg`, `--sudoku-cell-bg`,
 `--sudoku-btn-bg`, …) are listed in `src/styles.ts`.
@@ -59,6 +60,11 @@ sudoku-game {
   --sudoku-accent: #7c3aed;
 }
 ```
+
+The default font stack prefers **Open Sans** and falls back to the system font
+if it isn't available. The widget itself makes **no external requests**; load
+Open Sans on the host page (the demo does so via Google Fonts) or self-host it
+to guarantee it renders — otherwise the fallback is used.
 
 The widget adapts to its parent's width using container queries (no viewport
 media queries), and keypad buttons keep a 44×44 px minimum touch target.
