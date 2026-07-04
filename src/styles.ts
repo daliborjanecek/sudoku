@@ -7,18 +7,19 @@ export const styles = `
    * Using distinct names (--_x reads --sudoku-x) avoids self-referential
    * cycles, so host pages can override any --sudoku-* property reliably.
    */
-  --_accent: var(--sudoku-accent, #2563eb);
-  --_user: var(--sudoku-user-color, #2563eb);
-  --_conflict: var(--sudoku-conflict-color, #dc2626);
-  --_font: var(--sudoku-font, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif);
+  --_accent: var(--sudoku-accent, #006cb9);
+  --_user: var(--sudoku-user-color, #006cb9);
+  --_conflict: var(--sudoku-conflict-color, #cc3c00);
+  --_win: var(--sudoku-win-color, #af8b08);
+  --_font: var(--sudoku-font, "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif);
 
   --_bg: var(--sudoku-bg, #ffffff);
   --_grid-line: var(--sudoku-grid-line, #cbd5e1);
   --_block-line: var(--sudoku-grid-block-line, #1e293b);
   --_given: var(--sudoku-given-color, #0f172a);
   --_cell-bg: var(--sudoku-cell-bg, #ffffff);
-  --_selected-bg: var(--sudoku-selected-bg, #dbeafe);
-  --_conflict-bg: var(--sudoku-conflict-bg, #fee2e2);
+  --_selected-bg: var(--sudoku-selected-bg, #d9ebf8);
+  --_conflict-bg: var(--sudoku-conflict-bg, #fbe4d9);
   --_btn-bg: var(--sudoku-btn-bg, #f1f5f9);
   --_btn-text: var(--sudoku-btn-text, #0f172a);
 
@@ -203,7 +204,7 @@ button:focus-visible {
 .overlay-card h2 {
   margin: 0 0 8px;
   font-size: clamp(20px, 6cqw, 28px);
-  color: var(--_given);
+  color: var(--_win);
 }
 .overlay-card p {
   margin: 0 0 16px;
@@ -213,7 +214,7 @@ button:focus-visible {
 .overlay-card .big-time {
   font-variant-numeric: tabular-nums;
   font-weight: 700;
-  color: var(--_accent);
+  color: var(--_win);
 }
 .overlay-actions {
   display: flex;
@@ -221,7 +222,7 @@ button:focus-visible {
   justify-content: center;
 }
 .overlay-actions .btn-primary {
-  background: var(--_accent);
+  background: var(--_win);
   color: #fff;
 }
 `;
