@@ -1,6 +1,6 @@
-var _ = Object.defineProperty;
-var A = (i, n, e) => n in i ? _(i, n, { enumerable: !0, configurable: !0, writable: !0, value: e }) : i[n] = e;
-var d = (i, n, e) => A(i, typeof n != "symbol" ? n + "" : n, e);
+var z = Object.defineProperty;
+var A = (n, i, e) => i in n ? z(n, i, { enumerable: !0, configurable: !0, writable: !0, value: e }) : n[i] = e;
+var d = (n, i, e) => A(n, typeof i != "symbol" ? i + "" : i, e);
 const N = `
 :host {
   /*
@@ -15,6 +15,7 @@ const N = `
   --_font: var(--sudoku-font, "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif);
 
   --_bg: var(--sudoku-bg, #ffffff);
+  --_overlay-bg: var(--sudoku-overlay-bg, #ffffff);
   --_grid-line: var(--sudoku-grid-line, #cbd5e1);
   --_block-line: var(--sudoku-grid-block-line, #1e293b);
   --_given: var(--sudoku-given-color, #1c1e1f);
@@ -53,6 +54,7 @@ const N = `
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+  transition: opacity 0.2s ease;
 }
 
 .timer {
@@ -104,6 +106,7 @@ button:focus-visible {
   overflow: hidden;
   user-select: none;
   touch-action: manipulation;
+  transition: opacity 0.2s ease;
 }
 
 .cell {
@@ -162,6 +165,7 @@ button:focus-visible {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 6px;
+  transition: opacity 0.2s ease;
 }
 .keypad button {
   min-height: 44px;
@@ -183,6 +187,16 @@ button:focus-visible {
   }
 }
 
+/* ---------- Completion state ---------- */
+/* The board and controls fade to 45% opacity behind the win overlay,
+   instead of being dimmed by a dark scrim on top of them. */
+.wrap.completed > .topbar,
+.wrap.completed > .grid,
+.wrap.completed > .keypad {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
 /* ---------- Overlay ---------- */
 .overlay {
   position: absolute;
@@ -190,13 +204,12 @@ button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(15, 23, 42, 0.55);
   border-radius: 4px;
   z-index: 10;
   padding: 16px;
 }
 .overlay-card {
-  background: var(--_bg);
+  background: var(--_overlay-bg);
   border-radius: 12px;
   padding: 24px;
   text-align: center;
@@ -235,72 +248,72 @@ const f = ".", Z = {
   4: [47, 51],
   5: [52, 56]
 };
-function C(i) {
-  if (!Number.isFinite(i)) return 3;
-  const n = Math.trunc(i);
-  return n < 1 ? 1 : n > 5 ? 5 : n;
+function C(n) {
+  if (!Number.isFinite(n)) return 3;
+  const i = Math.trunc(n);
+  return i < 1 ? 1 : i > 5 ? 5 : i;
 }
-function M(i) {
-  return Z[C(i)];
+function M(n) {
+  return Z[C(n)];
 }
-function I(i) {
-  for (let n = i.length - 1; n > 0; n--) {
-    const e = Math.floor(Math.random() * (n + 1));
-    [i[n], i[e]] = [i[e], i[n]];
+function L(n) {
+  for (let i = n.length - 1; i > 0; i--) {
+    const e = Math.floor(Math.random() * (i + 1));
+    [n[i], n[e]] = [n[e], n[i]];
   }
-  return i;
+  return n;
 }
-function T(i, n, e) {
-  const t = Math.floor(n / 9), r = n % 9, o = t - t % 3, l = r - r % 3;
+function T(n, i, e) {
+  const t = Math.floor(i / 9), r = i % 9, o = t - t % 3, l = r - r % 3;
   for (let s = 0; s < 9; s++)
-    if (i[t * 9 + s] === e || i[s * 9 + r] === e) return !1;
+    if (n[t * 9 + s] === e || n[s * 9 + r] === e) return !1;
   for (let s = 0; s < 3; s++)
     for (let a = 0; a < 3; a++)
-      if (i[(o + s) * 9 + (l + a)] === e) return !1;
+      if (n[(o + s) * 9 + (l + a)] === e) return !1;
   return !0;
 }
-function L(i) {
-  let n = -1;
+function I(n) {
+  let i = -1;
   for (let t = 0; t < 81; t++)
-    if (i[t] === 0) {
-      n = t;
+    if (n[t] === 0) {
+      i = t;
       break;
     }
-  if (n === -1) return !0;
-  const e = I([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  if (i === -1) return !0;
+  const e = L([1, 2, 3, 4, 5, 6, 7, 8, 9]);
   for (const t of e)
-    if (T(i, n, t)) {
-      if (i[n] = t, L(i)) return !0;
-      i[n] = 0;
+    if (T(n, i, t)) {
+      if (n[i] = t, I(n)) return !0;
+      n[i] = 0;
     }
   return !1;
 }
 const G = 1022;
-function D(i) {
-  let n = 0;
-  for (; i; )
-    i &= i - 1, n++;
-  return n;
+function D(n) {
+  let i = 0;
+  for (; n; )
+    n &= n - 1, i++;
+  return i;
 }
-const y = (i, n) => Math.floor(i / 3) * 3 + Math.floor(n / 3);
-function V(i) {
-  const n = new Int16Array(9), e = new Int16Array(9), t = new Int16Array(9);
+const y = (n, i) => Math.floor(n / 3) * 3 + Math.floor(i / 3);
+function V(n) {
+  const i = new Int16Array(9), e = new Int16Array(9), t = new Int16Array(9);
   for (let r = 0; r < 81; r++) {
-    const o = i[r];
+    const o = n[r];
     if (o !== 0) {
       const l = Math.floor(r / 9), s = r % 9, a = 1 << o;
-      n[l] |= a, e[s] |= a, t[y(l, s)] |= a;
+      i[l] |= a, e[s] |= a, t[y(l, s)] |= a;
     }
   }
-  return { rows: n, cols: e, boxes: t };
+  return { rows: i, cols: e, boxes: t };
 }
-function O(i, n) {
-  const { rows: e, cols: t, boxes: r } = V(i);
+function O(n, i) {
+  const { rows: e, cols: t, boxes: r } = V(n);
   let o = 0;
   const l = () => {
     let s = -1, a = 10, c = 0;
     for (let h = 0; h < 81; h++) {
-      if (i[h] !== 0) continue;
+      if (n[h] !== 0) continue;
       const m = Math.floor(h / 9), x = h % 9, v = G & ~(e[m] | t[x] | r[y(m, x)]);
       if (v === 0) return;
       const g = D(v);
@@ -317,31 +330,31 @@ function O(i, n) {
       const h = p & -p;
       p ^= h;
       const m = 31 - Math.clz32(h);
-      if (i[s] = m, e[u] |= h, t[b] |= h, r[E] |= h, l(), i[s] = 0, e[u] ^= h, t[b] ^= h, r[E] ^= h, o >= n) return;
+      if (n[s] = m, e[u] |= h, t[b] |= h, r[E] |= h, l(), n[s] = 0, e[u] ^= h, t[b] ^= h, r[E] ^= h, o >= i) return;
     }
   };
   return l(), o;
 }
-function S(i) {
-  let n = "";
+function w(n) {
+  let i = "";
   for (let e = 0; e < 81; e++)
-    n += i[e] === 0 ? f : String(i[e]);
-  return n;
+    i += n[e] === 0 ? f : String(n[e]);
+  return i;
 }
-function q(i) {
-  const n = new Int8Array(81);
-  L(n);
-  const e = S(n), [t, r] = M(i), o = t + Math.floor(Math.random() * (r - t + 1)), l = n.slice(), s = I(Array.from({ length: 81 }, (c, u) => u));
+function K(n) {
+  const i = new Int8Array(81);
+  I(i);
+  const e = w(i), [t, r] = M(n), o = t + Math.floor(Math.random() * (r - t + 1)), l = i.slice(), s = L(Array.from({ length: 81 }, (c, u) => u));
   let a = 0;
   for (const c of s) {
     if (a >= o) break;
     const u = l[c];
     u !== 0 && (l[c] = 0, O(l.slice(), 2) === 1 ? a++ : l[c] = u);
   }
-  return { puzzle: S(l), solution: e };
+  return { puzzle: w(l), solution: e };
 }
-const z = 1, K = "sudoku-game";
-class R extends HTMLElement {
+const _ = 1, R = "sudoku-game";
+class q extends HTMLElement {
   constructor() {
     super();
     // --- game state (kept per-instance, never in module scope) ---
@@ -358,6 +371,7 @@ class R extends HTMLElement {
     d(this, "timerEl");
     d(this, "actionsEl");
     d(this, "gridEl");
+    d(this, "wrapEl");
     d(this, "overlayEl", null);
     d(this, "intervalId", null);
     d(this, "sinceSave", 0);
@@ -380,14 +394,14 @@ class R extends HTMLElement {
     return C(Number.isFinite(t) ? t : 3);
   }
   get storageKey() {
-    return this.getAttribute("storage-key") || K;
+    return this.getAttribute("storage-key") || R;
   }
   // ------------------------------------------------------------------ skeleton
   buildSkeleton() {
     const e = document.createElement("style");
     e.textContent = N, this.root.appendChild(e);
     const t = document.createElement("div");
-    t.className = "wrap", t.tabIndex = 0, t.addEventListener("keydown", this.onKeyDown);
+    t.className = "wrap", t.tabIndex = 0, t.addEventListener("keydown", this.onKeyDown), this.wrapEl = t;
     const r = document.createElement("div");
     r.className = "topbar", this.timerEl = document.createElement("div"), this.timerEl.className = "timer", this.timerEl.textContent = "00:00";
     const o = document.createElement("div");
@@ -440,13 +454,12 @@ class R extends HTMLElement {
     }
   }
   renderTimer() {
-    this.timerEl.textContent = w(this.elapsed);
+    this.timerEl.textContent = k(this.elapsed);
   }
   renderOverlay() {
-    this.completed ? this.showCompletionOverlay() : this.overlayEl && (this.overlayEl.remove(), this.overlayEl = null);
+    this.wrapEl.classList.toggle("completed", this.completed), this.completed ? this.showCompletionOverlay() : this.overlayEl && (this.overlayEl.remove(), this.overlayEl = null);
   }
   showCompletionOverlay() {
-    var c;
     if (this.overlayEl) return;
     const e = document.createElement("div");
     e.className = "overlay";
@@ -457,11 +470,11 @@ class R extends HTMLElement {
     const o = document.createElement("p");
     o.append("Vyřešeno za ");
     const l = document.createElement("span");
-    l.className = "big-time", l.textContent = w(this.elapsed), o.append(l);
+    l.className = "big-time", l.textContent = k(this.elapsed), o.append(l);
     const s = document.createElement("div");
     s.className = "overlay-actions";
     const a = this.button("Nová hra", () => this.newGame(!0));
-    a.className = "btn-primary", s.appendChild(a), t.append(r, o, s), e.appendChild(t), (c = this.root.querySelector(".wrap")) == null || c.appendChild(e), this.overlayEl = e;
+    a.className = "btn-primary", s.appendChild(a), t.append(r, o, s), e.appendChild(t), this.wrapEl.appendChild(e), this.overlayEl = e;
   }
   // ------------------------------------------------------------------ board helpers
   /** Merged current board: given cells overlaid with user entries. */
@@ -512,18 +525,17 @@ class R extends HTMLElement {
   }
   // ------------------------------------------------------------------ interaction
   selectCell(e) {
-    var t;
-    this.completed || this.puzzle[e] === f && (this.selected = e, (t = this.root.querySelector(".wrap")) == null || t.focus(), this.renderGrid());
+    this.completed || this.puzzle[e] === f && (this.selected = e, this.wrapEl.focus(), this.renderGrid());
   }
   inputValue(e) {
     if (this.completed || this.selected === null) return;
     const t = this.selected;
-    this.puzzle[t] === f && (this.entries = k(this.entries, t, String(e)), this.afterMove());
+    this.puzzle[t] === f && (this.entries = S(this.entries, t, String(e)), this.afterMove());
   }
   eraseValue() {
     if (this.completed || this.selected === null) return;
     const e = this.selected;
-    this.puzzle[e] === f && this.entries[e] !== f && (this.entries = k(this.entries, e, f), this.afterMove());
+    this.puzzle[e] === f && this.entries[e] !== f && (this.entries = S(this.entries, e, f), this.afterMove());
   }
   afterMove() {
     if (this.renderGrid(), this.checkComplete()) {
@@ -586,7 +598,7 @@ class R extends HTMLElement {
     this.entries = f.repeat(81), this.elapsed = 0, this.selected = null, this.completed = !1, this.renderAll(), this.startTimer(), this.save();
   }
   newGame(e) {
-    const { puzzle: t, solution: r } = q(this.difficulty);
+    const { puzzle: t, solution: r } = K(this.difficulty);
     this.puzzle = t, this.solution = r, this.entries = f.repeat(81), this.elapsed = 0, this.selected = null, this.completed = !1, this.overlayEl && (this.overlayEl.remove(), this.overlayEl = null), this.renderAll(), e && this.startTimer(), this.save();
   }
   // ------------------------------------------------------------------ timer
@@ -606,7 +618,7 @@ class R extends HTMLElement {
   save() {
     if (this.completed) return;
     const e = {
-      version: z,
+      version: _,
       puzzle: this.puzzle,
       solution: this.solution,
       entries: this.entries,
@@ -643,19 +655,19 @@ class R extends HTMLElement {
     return F(t) ? (this.puzzle = t.puzzle, this.solution = t.solution, this.entries = t.entries, this.elapsed = t.elapsed, this.selected = null, this.completed = !1, !0) : (this.clearSaved(), !1);
   }
 }
-function k(i, n, e) {
-  return i.slice(0, n) + e + i.slice(n + 1);
+function S(n, i, e) {
+  return n.slice(0, i) + e + n.slice(i + 1);
 }
-function w(i) {
-  const n = Math.floor(i / 60), e = i % 60;
-  return `${String(n).padStart(2, "0")}:${String(e).padStart(2, "0")}`;
+function k(n) {
+  const i = Math.floor(n / 60), e = n % 60;
+  return `${String(i).padStart(2, "0")}:${String(e).padStart(2, "0")}`;
 }
-function F(i) {
-  if (typeof i != "object" || i === null) return !1;
-  const n = i;
-  return n.version === z && typeof n.puzzle == "string" && n.puzzle.length === 81 && typeof n.solution == "string" && n.solution.length === 81 && typeof n.entries == "string" && n.entries.length === 81 && typeof n.difficulty == "number" && typeof n.elapsed == "number" && typeof n.savedAt == "number";
+function F(n) {
+  if (typeof n != "object" || n === null) return !1;
+  const i = n;
+  return i.version === _ && typeof i.puzzle == "string" && i.puzzle.length === 81 && typeof i.solution == "string" && i.solution.length === 81 && typeof i.entries == "string" && i.entries.length === 81 && typeof i.difficulty == "number" && typeof i.elapsed == "number" && typeof i.savedAt == "number";
 }
-typeof customElements < "u" && !customElements.get("sudoku-game") && customElements.define("sudoku-game", R);
+typeof customElements < "u" && !customElements.get("sudoku-game") && customElements.define("sudoku-game", q);
 export {
-  R as SudokuGame
+  q as SudokuGame
 };
