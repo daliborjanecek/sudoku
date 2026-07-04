@@ -13,6 +13,7 @@
     "dev": "vite",
     "build": "vite build && tsc",
     "build:pages": "vite build --config vite.pages.config.ts",
+    "build:site": "vite build && vite build --config vite.pages.config.ts && cp dist/sudoku.iife.js dist/sudoku.js docs/",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
