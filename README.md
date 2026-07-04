@@ -52,7 +52,8 @@ the element (each has a built-in fallback):
 | `--sudoku-win-color`      | `#af8b08`                              | completion ("Hotovo") overlay         |
 | `--sudoku-font`           | `"Open Sans", system-ui, …`            | font stack                            |
 
-Additional surface colors (`--sudoku-bg`, `--sudoku-cell-bg`,
+Additional surface colors (`--sudoku-given-color` `#1c1e1f` text,
+`--sudoku-hover-bg` `#eef9ff` cell hover, `--sudoku-bg`, `--sudoku-cell-bg`,
 `--sudoku-btn-bg`, …) are listed in `src/styles.ts`.
 
 ```css
